@@ -1,0 +1,46 @@
+{
+  "Gryffondor": {
+    "emoji": "🔥",
+    "description": "Vous entrez dans une salle chaleureuse, décorée de rouge et d’or. Un feu crépite dans la cheminée, et des élèves rient autour des canapés.",
+    "message_installation": "✨ Le courage et la loyauté sont à l'honneur ici. Bienvenue chez les lions !",
+    "couleurs": ["rouge", "or"],
+    "traits": ["courage", "bravoure", "loyauté"],
+    "bonus_attributs": {
+      "courage": 2,
+      "loyauté": 1
+    }
+  },
+  "Serpentard": {
+    "emoji": "🐍",
+    "description": "Vous découvrez une salle voûtée, éclairée par la lueur verte du lac. Les élèves vous observent avec curiosité et respect.",
+    "message_installation": "✨ La ruse et l’ambition sont vos alliées. Bienvenue dans la noble maison Serpentard.",
+    "couleurs": ["vert", "argent"],
+    "traits": ["ruse", "ambition", "détermination"],
+    "bonus_attributs": {
+      "ambition": 2,
+      "intelligence": 1
+    }
+  },
+  "Poufsouffle": {
+    "emoji": "🌻",
+    "description": "Vous entrez dans une pièce confortable, aux murs recouverts de plantes et d’herbes magiques. L’atmosphère y est paisible et accueillante.",
+    "message_installation": "✨ La patience et le travail sont vos plus grandes forces. Bienvenue à Poufsouffle !",
+    "couleurs": ["jaune", "noir"],
+    "traits": ["travail", "patience", "loyauté"],
+    "bonus_attributs": {
+      "loyauté": 2,
+      "courage": 1
+    }
+  },
+  "Serdaigle": {
+    "emoji": "📘",
+    "description": "Vous arrivez dans une salle lumineuse, pleine de livres et de cartes enchantées. Les discussions portent déjà sur la prochaine énigme du professeur Flitwick.",
+    "message_installation": "✨ La sagesse et la curiosité t’accompagneront. Bienvenue chez les érudits de Serdaigle.",
+    "couleurs": ["bleu", "bronze"],
+    "traits": ["intelligence", "créativité", "curiosité"],
+    "bonus_attributs": {
+      "intelligence": 2,
+      "ambition": 1
+    }
+  }
+}
