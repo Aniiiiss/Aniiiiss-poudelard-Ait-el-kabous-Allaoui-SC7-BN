@@ -27,4 +27,20 @@ def demande_nombre(message,min_val =None, max_val = None):
             chiffres = saisie[1:]
         else:
             chiffres = saisie
-        
+        #On verifie que les caracteres sont des chiffres
+        if not all("0"<=c<="9"for c in chiffres):
+            print("Veuillez entrer un nombre entier.")
+            continue
+        #On convertie la STR en entier
+        Valeur = 0
+        for c in chiffres:
+            valeur = valeur*10 +(ord(c)-ord(0))
+        if negatif:
+            valeur = valeur*-1
+        #Verifier MinvVal
+        if min_val is not None and valeur < min_val:
+            print("Veuillez entrer un nombre >= à :",min_val)
+        #Verifier MaxVal
+        if max_val is not None and valeur > max_val:
+            print("Veuillez entrer un nombre <=",max_val)
+        return valeur
