@@ -41,7 +41,7 @@ def repartition_maison(joueur, questions):
     loyaute = attributs.get("loyaute", attributs.get("loyauté", 0))
     ambition = attributs.get("ambition", 0)
 
-    # Scores initiaux des maisons
+
     scores = {
         "Gryffondor": 0,
         "Serpentard": 0,

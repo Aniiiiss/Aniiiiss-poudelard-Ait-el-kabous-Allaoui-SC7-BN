@@ -8,7 +8,7 @@ def initialiser_personnage(nom, prenom, attributs):
         "Argent": 100,          # argent de départ défini dans l'énoncé
         "Inventaire": [],       # liste des objets possédés
         "Sortilèges": [],       # liste des sorts connus
-        "Attributs": attributs  # dictionnaire des attributs
+        "Attributs": attributs
     }
     return personnage
 
