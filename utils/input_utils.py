@@ -32,7 +32,7 @@ def demande_nombre(message,min_val =None, max_val = None):
             print("Veuillez entrer un nombre entier.")
             continue
         #On convertie la STR en entier
-        Valeur = 0
+        valeur = 0
         for c in chiffres:
             valeur = valeur*10 +(ord(c)-ord(0))
         if negatif:
