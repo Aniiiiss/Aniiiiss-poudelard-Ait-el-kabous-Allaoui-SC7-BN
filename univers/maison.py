@@ -76,3 +76,5 @@ def repartition_maison(joueur, questions):
 
     maison_finale = max(scores, key=scores.get)
     return maison_finale
+
+
