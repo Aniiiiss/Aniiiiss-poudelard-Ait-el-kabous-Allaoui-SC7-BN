@@ -8,7 +8,7 @@ def demande_texte(messsage):
         else:
             print('Veuillez entrer une texte non vide')
 
-
+#_____________________________________________________________________________________________________________________#
 def demande_nombre(message,min_val =None, max_val = None):
     while True:
         saisie = input(message).strip()
@@ -44,3 +44,23 @@ def demande_nombre(message,min_val =None, max_val = None):
         if max_val is not None and valeur > max_val:
             print("Veuillez entrer un nombre <=",max_val)
         return valeur
+
+#____________________________________________________________________________________________________________________#
+def demander_choix(message, options):
+    """
+    Affiche une liste de choix et retourne l'option choisie par l'utilisateur.
+    """
+    print(message)
+
+    for i in range(len(options)):
+        print(f"{i + 1}. {options[i]}")
+
+    choix = demander_nombre("Votre choix : ", 1, len(options))
+    return options[choix - 1]
+
+def load_fichier(chemin_fichier):
+    """
+    Charge un fichier JSON et retourne son contenu.
+    """
+    with open(chemin_fichier, "r", encoding="utf-8") as f:
+        return json.load(f)
