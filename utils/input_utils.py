@@ -1,23 +1,30 @@
-def demander_texte(messsage):
-    #Demande un texte à l'utilisateur et s'assure qu'il n'est oas vide
-    while True:
-        texte = input(messsage)
-        texte = texte.strip()
-        if texte != '':
-            return texte
-        else:
-            print('Veuillez entrer une texte non vide')
+import json
 
-#_____________________________________________________________________________________________________________________#
-def demander_nombre(message,min_val =None, max_val = None):
+
+def demander_texte(message):
+
     while True:
-        saisie = input(message).strip()
-        #Verifier si la chaine n'est pas vide
-        if saisie =="":
+        saisie = input(message)
+        saisie = saisie.strip()
+
+        if saisie == "":
+            print("Veuillez entrer du texte (pas vide).")
+        else:
+            return saisie
+
+
+def demander_nombre(message, mini, maxi):
+  "
+    while True:
+        saisie = input(message)
+        saisie = saisie.strip()
+
+        # vide ?
+        if saisie == "":
             print("Veuillez entrer un nombre entier.")
             continue
 
-        #Verification du signe négatif
+        # signe négatif ?
         negatif = False
         if saisie[0] == "-":
             if len(saisie) == 1:
@@ -27,40 +34,52 @@ def demander_nombre(message,min_val =None, max_val = None):
             chiffres = saisie[1:]
         else:
             chiffres = saisie
-        #On verifie que les caracteres sont des chiffres
-        if not all("0"<=c<="9"for c in chiffres):
+
+        # vérifier que tous les caractères sont des chiffres
+        ok = True
+        for c in chiffres:
+            if not ("0" <= c <= "9"):
+                ok = False
+                break
+
+        if not ok:
             print("Veuillez entrer un nombre entier.")
             continue
-        #On convertie la STR en entier
+
+        # conversion manuelle str -> int
         valeur = 0
         for c in chiffres:
-            valeur = valeur*10 +(ord(c)-ord(0))
+            valeur = valeur * 10 + (ord(c) - ord("0"))
+
         if negatif:
-            valeur = valeur*-1
-        #Verifier MinvVal
-        if min_val is not None and valeur < min_val:
-            print("Veuillez entrer un nombre >= à :",min_val)
-        #Verifier MaxVal
-        if max_val is not None and valeur > max_val:
-            print("Veuillez entrer un nombre <=",max_val)
+            valeur = -valeur
+
+        # vérifier les bornes
+        if valeur < mini or valeur > maxi:
+            print(f"Veuillez entrer un nombre entre {mini} et {maxi}.")
+            continue
+
         return valeur
 
-#____________________________________________________________________________________________________________________#
-def demander_choix(message, options):
-    """
-    Affiche une liste de choix et retourne l'option choisie par l'utilisateur.
-    """
-    print(message)
 
+def demander_choix(message, options):
+
+    print(message)
     for i in range(len(options)):
         print(f"{i + 1}. {options[i]}")
 
     choix = demander_nombre("Votre choix : ", 1, len(options))
     return options[choix - 1]
 
-def load_fichier(chemin_fichier):
-    """
-    Charge un fichier JSON et retourne son contenu.
-    """
-    with open(chemin_fichier, "r", encoding="utf-8") as f:
-        return json.load(f)
+
+def load_fichier(chemin):
+
+    try:
+        with open(chemin, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Erreur : fichier introuvable : {chemin}")
+        exit(1)
+    except json.JSONDecodeError:
+        print(f"Erreur : fichier JSON invalide : {chemin}")
+        exit(1)
