@@ -2,7 +2,7 @@ from utils.input_utils import demander_nombre
 from chapitres.chapitre_1 import lancer_chapitre_1
 from chapitres.chapitre_2 import lancer_chapitre_2
 from chapitres.chapitre_3 import lancer_chapitre_3
-from chapitres.chapitre_4 import lancer_chapitre4_quidditch
+from chapitres.chapitre_4 import lancer_chapitre_4
 from chapitres.chapitre_5 import lancer_chapitre_5
 
 
@@ -36,7 +36,7 @@ def lancer_menu():
             lancer_chapitre_3(personnage, maisons)
 
             # Chapitre 4 : Quidditch / fin d'année
-            lancer_chapitre4_quidditch(personnage, maisons)
+            lancer_chapitre_4(personnage, maisons)
 
             #  Chapitre 5 : boutique (extension)
             personnage = lancer_chapitre_5(personnage, maisons)
