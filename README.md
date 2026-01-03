@@ -75,7 +75,7 @@ Binôme : Anis Ait el Kabous (Aniiiss) et Anas Allaoui (Fluox-Anas).
 
 ### Répartition finale du travail
 - Anis Ait el Kabous : dossier `utils`, Chapitre 1, Chapitre 3, Chapitre 5.
-- Anas Allaoui : Chapitre 2, Chapitre 4, modules associés et intégration globale.
+- Anas Allaoui : Chapitre 2, Chapitre 4, dossier univers .
 - Finalisation : ajustements finaux réalisés ensemble lors de la dernière journée.
 
 
