@@ -47,9 +47,9 @@ def demander_nombre(message,min_val =None, max_val = None):
 
 #____________________________________________________________________________________________________________________#
 def demander_choix(message, options):
-
-    #Affiche une liste de choix et retourne l'option choisie par l'utilisateur.#
-
+    """
+    Affiche une liste de choix et retourne l'option choisie par l'utilisateur.
+    """
     print(message)
 
     for i in range(len(options)):
@@ -59,7 +59,8 @@ def demander_choix(message, options):
     return options[choix - 1]
 
 def load_fichier(chemin_fichier):
-    #Charge un fichier JSON et retourne son contenu.#
-
+    """
+    Charge un fichier JSON et retourne son contenu.
+    """
     with open(chemin_fichier, "r", encoding="utf-8") as f:
         return json.load(f)

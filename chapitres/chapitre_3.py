@@ -173,7 +173,7 @@ def lancer_chapitre_3(personnage, maisons):
     maison_joueur = personnage.get("maison") or personnage.get("Maison")
 
     if maison_joueur is None:
-        print(" Maison du joueur introuvable dans le personnage (clé 'maison').")
+        print("⚠️ Maison du joueur introuvable dans le personnage (clé 'maison').")
     else:
         ajouter_points_maison(maisons, maison_joueur, score)
 
