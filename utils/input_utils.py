@@ -14,7 +14,7 @@ def demander_texte(message):
 
 
 def demander_nombre(message, mini, maxi):
-  "
+
     while True:
         saisie = input(message)
         saisie = saisie.strip()
