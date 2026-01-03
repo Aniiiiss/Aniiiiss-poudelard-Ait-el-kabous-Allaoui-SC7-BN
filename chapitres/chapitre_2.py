@@ -12,7 +12,7 @@ def _afficher_titre(titre):
 
 def rencontrer_amis(joueur):
 
-    _afficher_titre("🚂 Voyage vers Poudlard : premières rencontres")
+    _afficher_titre(" Voyage vers Poudlard : premières rencontres")
 
     attributs = joueur.get("Attributs", {})
 
@@ -30,10 +30,10 @@ def rencontrer_amis(joueur):
 
     if choix_ron == "Bien sûr, assieds-toi !":
         attributs["loyaute"] = attributs.get("loyaute", 0) + 1
-        print("🤝 Tu acceptes Ron à tes côtés. Ta loyauté augmente de 1.")
+        print(" Tu acceptes Ron à tes côtés. Ta loyauté augmente de 1.")
     else:
         attributs["ambition"] = attributs.get("ambition", 0) + 1
-        print("😼 Tu préfères voyager seul et réfléchir à ton avenir.")
+        print(" Tu préfères voyager seul et réfléchir à ton avenir.")
         print("Ton ambition augmente de 1.")
 
     print("\nQuelques minutes plus tard, une jeune fille aux cheveux frisés ouvre la porte du compartiment.")
@@ -50,11 +50,11 @@ def rencontrer_amis(joueur):
 
     if choix_hermione == "Oui, j’ai déjà commencé à tout lire !":
         attributs["intelligence"] = attributs.get("intelligence", 0) + 1
-        print("📚 Hermione est impressionnée par ton sérieux.")
+        print(" Hermione est impressionnée par ton sérieux.")
         print("Ton intelligence augmente de 1.")
     else:
         attributs["courage"] = attributs.get("courage", 0) + 1
-        print("😅 Tu avoues honnêtement que tu n’as pas encore tout lu.")
+        print(" Tu avoues honnêtement que tu n’as pas encore tout lu.")
         print("Ton courage augmente de 1.")
 
 
@@ -111,7 +111,7 @@ def mot_de_bienvenue():
 
 def ceremonie_repartition(joueur):
 
-    _afficher_titre("🎩 Cérémonie de répartition")
+    _afficher_titre(" Cérémonie de répartition")
 
     print("Les premières années se rassemblent devant le tabouret où repose le Choixpeau magique.\n")
     input("(Appuie sur Entrée pour t’avancer vers le Choixpeau...)")
@@ -157,7 +157,7 @@ def ceremonie_repartition(joueur):
     joueur["Maison"] = maison
 
     print(f"\nLe Choixpeau crie : {maison} !!!")
-    print(f"🎉 Tu rejoins la maison {maison} sous les applaudissements !")
+    print(f" Tu rejoins la maison {maison} sous les applaudissements !")
 
     input("\n(Appuie sur Entrée pour suivre les préfets vers ta salle commune...)")
 
@@ -169,7 +169,7 @@ def installation_salle_commune(joueur):
     maison = joueur.get("Maison")
 
     if not maison:
-        print("⚠️ Erreur : aucune maison n’a été attribuée au joueur.")
+        print("⚠ Erreur : aucune maison n’a été attribuée au joueur.")
         return
 
     print("Tu suis les préfets à travers les escaliers mouvants et les longs couloirs...\n")
@@ -212,7 +212,7 @@ def lancer_chapitre_2(personnage):
     ceremonie_repartition(personnage)
     installation_salle_commune(personnage)
 
-    print("\n📜 Fin du Chapitre 2 ! Voici l’état actuel de ton personnage :\n")
+    print("\n Fin du Chapitre 2 ! Voici l’état actuel de ton personnage :\n")
     afficher_personnage(personnage)
 
-    print("\n✨ Prépare-toi pour le Chapitre 3 : apprentissage de nouveaux sorts...\n")
+    print("\n Prépare-toi pour le Chapitre 3 : apprentissage de nouveaux sorts...\n")
