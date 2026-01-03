@@ -12,11 +12,11 @@ def _afficher_titre(titre):
 
 def evaluation_finale(personnage, maisons):
 
-    _afficher_titre(" Examen final de magie")
+    _afficher_titre("📘 Examen final de magie")
 
     maison_joueur = personnage.get("Maison", None)
     if maison_joueur is None:
-        print(" Erreur : aucune maison n’est associée au personnage.")
+        print("⚠️ Erreur : aucune maison n’est associée au personnage.")
         return
 
 
@@ -29,11 +29,11 @@ def evaluation_finale(personnage, maisons):
         reponse = demander_choix("Choisis une réponse :", q["propositions"])
 
         if reponse == q["bonne_reponse"]:
-            print(" Bonne réponse !")
+            print("✅ Bonne réponse !")
             score_perso += q.get("points_perso", 10)
             actualiser_points_maison(maisons, maison_joueur, q.get("points_maison", 20))
         else:
-            print(" Mauvaise réponse...")
+            print("❌ Mauvaise réponse...")
             score_perso += q.get("points_perso_mauvaise", 0)
             actualiser_points_maison(maisons, maison_joueur, q.get("points_maison_mauvaise", 0))
 
@@ -53,11 +53,11 @@ def evaluation_finale(personnage, maisons):
 
 def evenements_fin_annee(personnage, maisons):
 
-    _afficher_titre(" Évènements de fin d’année")
+    _afficher_titre("🎉 Évènements de fin d’année")
 
     maison_joueur = personnage.get("Maison", None)
     if maison_joueur is None:
-        print(" Erreur : aucune maison n’est associée au personnage.")
+        print("⚠️ Erreur : aucune maison n’est associée au personnage.")
         return
 
     # Exemple : trois situations possibles
@@ -160,7 +160,7 @@ def bilan_final(personnage, maisons):
 
 def lancer_chapitre_4(personnage, maisons):
 
-    _afficher_titre(" Chapitre 4 – Fin d’année à Poudlard")
+    _afficher_titre("📖 Chapitre 4 – Fin d’année à Poudlard")
 
     evaluation_finale(personnage, maisons)
     evenements_fin_annee(personnage, maisons)
