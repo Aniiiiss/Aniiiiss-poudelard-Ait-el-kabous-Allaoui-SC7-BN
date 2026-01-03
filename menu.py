@@ -1,5 +1,8 @@
-
-from utils.input_utils import demander_nombre
+from chapitres.chapitre_1 import lancer_chapitre_1
+from chapitres.chapitre_2 import lancer_chapitre_2
+from chapitres.chapitre_3 import lancer_chapitre_3
+from chapitres.chapitre_4 import lancer_chapitre4_quidditch
+from utils.input_utils import demande_nombre
 
 
 def afficher_menu_principal():
@@ -52,3 +55,42 @@ def lancer_choix_menu():
         # c) Sinon (normalement impossible grâce à demander_nombre)
         else:
             print("Choix invalide. Veuillez entrer 1 ou 2.")
+
+def afficher_menu_principal():
+    print("=== Menu principal de Poudelard ===")
+    print("1. Lancer le Chapitre 1 – L’arrivée dans le monde magique.")
+    print("2. Quitter le jeu.")
+
+
+def lancer_choix_menu():
+    # 1. Initialiser les points des maisons
+    maisons = {
+        "Gryffondor": 0,
+        "Serpentard": 0,
+        "Poufsouffle": 0,
+        "Serdaigle": 0
+    }
+
+    while True:
+        afficher_menu_principal()
+        choix = input("Votre choix : ").strip()
+
+        if choix == "1":
+            # Chapitre 1 : création du personnage
+            personnage = lancer_chapitre_1()
+
+            # Chapitre 2 : voyage + répartition
+            lancer_chapitre_2(personnage)
+
+            # Chapitre 3 : sorts + quiz + points de maison
+            lancer_chapitre_3(personnage, maisons)
+
+            # Chapitre 4 : épreuve de Quidditch (scénario guidé)
+            lancer_chapitre4_quidditch(personnage, maisons)
+
+        elif choix == "2":
+            print("Merci d'avoir joué à Poudelard – À bientôt, jeune sorcier !")
+            break
+        else:
+            print("Choix invalide, veuillez entrer 1 ou 2.")
+            print()
