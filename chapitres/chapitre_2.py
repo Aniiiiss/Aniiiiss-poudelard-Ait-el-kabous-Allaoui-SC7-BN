@@ -164,12 +164,12 @@ def ceremonie_repartition(joueur):
 
 def installation_salle_commune(joueur):
 
-    _afficher_titre("🏰 Installation dans la salle commune")
+    _afficher_titre(" Installation dans la salle commune")
 
     maison = joueur.get("Maison")
 
     if not maison:
-        print("⚠ Erreur : aucune maison n’a été attribuée au joueur.")
+        print(" Erreur : aucune maison n’a été attribuée au joueur.")
         return
 
     print("Tu suis les préfets à travers les escaliers mouvants et les longs couloirs...\n")
@@ -205,7 +205,7 @@ def installation_salle_commune(joueur):
 
 def lancer_chapitre_2(personnage):
 
-    _afficher_titre("📖 Chapitre 2 – Voyage vers Poudlard et sélection de la maison")
+    _afficher_titre(" Chapitre 2 – Voyage vers Poudlard et sélection de la maison")
 
     rencontrer_amis(personnage)
     mot_de_bienvenue()
