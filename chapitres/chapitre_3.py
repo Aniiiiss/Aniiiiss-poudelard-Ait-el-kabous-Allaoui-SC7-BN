@@ -10,7 +10,7 @@ def apprendre_sorts(joueur, chemin_fichier="data/sorts.json"):
     def normaliser_sorts(donnees):
         sorts = []
 
-        # Cas 1 : liste de dicts
+        # Cas 1 : liste de dict
         if isinstance(donnees, list):
             for s in donnees:
                 if not isinstance(s, dict):
