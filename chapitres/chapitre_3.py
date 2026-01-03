@@ -1,15 +1,17 @@
 
 import random
+
 from utils.input_utils import load_fichier, demander_texte
-from maison import ajouter_points_maison, afficher_maison_en_tete
-from personnage import afficher_personnage
+from univers.personnage import afficher_personnage
+from univers.maison import actualiser_points_maison, afficher_maison_gagnante
 
 
-def apprendre_sorts(joueur, chemin_fichier="../data/sorts.json"):
-
-
+def apprendre_sorts(joueur, chemin_fichier="data/sorts.json"):
     def normaliser_sorts(donnees):
-
+        """
+        Transforme le contenu du JSON des sorts en liste de dicts
+        avec les clés : nom, type, description.
+        """
         sorts = []
 
         # Cas 1 : liste de dicts
@@ -50,7 +52,6 @@ def apprendre_sorts(joueur, chemin_fichier="../data/sorts.json"):
     elif "sortilèges" in joueur and isinstance(joueur["sortilèges"], list):
         liste_sorts_joueur = joueur["sortilèges"]
     else:
-        # On choisit une clé "Sortilèges"
         joueur["Sortilèges"] = []
         liste_sorts_joueur = joueur["Sortilèges"]
 
@@ -84,7 +85,7 @@ def apprendre_sorts(joueur, chemin_fichier="../data/sorts.json"):
         deja_appris.add(nom)
         quotas[type_] -= 1
 
-        # ajout au joueur :
+        # ajout au joueur (on stocke un petit dict pour chaque sort)
         liste_sorts_joueur.append({"nom": nom, "type": type_, "description": desc})
         appris.append({"nom": nom, "type": type_, "description": desc})
 
@@ -97,15 +98,13 @@ def apprendre_sorts(joueur, chemin_fichier="../data/sorts.json"):
         print(f"- {s['nom']} ({s['type']}) : {s['description']}")
 
 
-
-def quiz_magie(joueur, chemin_fichier="../data/quiz_magie.json"):
-
+def quiz_magie(joueur, chemin_fichier="data/quiz_magie.json"):
     print("Bienvenue au quiz de magie de Poudlard !")
     print("Réponds correctement aux 4 questions pour faire gagner des points à ta maison.\n")
 
     donnees = load_fichier(chemin_fichier)
 
-    # Normaliser les questions sous forme de liste de dicts:
+    # Normaliser les questions sous forme de liste de dicts
     questions = []
     if isinstance(donnees, list):
         for item in donnees:
@@ -156,29 +155,25 @@ def quiz_magie(joueur, chemin_fichier="../data/quiz_magie.json"):
 
 
 def lancer_chapitre_3(personnage, maisons):
-
     print("\n=== Chapitre 3 : Les cours et la découverte de Poudlard ===\n")
 
     # 1) Apprentissage des sorts
-    apprendre_sorts(personnage, "../data/sorts.json")
+    apprendre_sorts(personnage)
 
     # 2) Quiz magique
-    quiz_magie(personnage, "../data/quiz_magie.json")
+    quiz_magie(personnage)
 
     # 3) Mise à jour des points de la maison du joueur
-    # On suppose que le score du joueur est dans personnage
     score = personnage.get("score", 0)
-
-    # On suppose que le nom de la maison est stocké dans personnage
-    maison_joueur = personnage.get("maison") or personnage.get("Maison")
+    maison_joueur = personnage.get("Maison") or personnage.get("maison")
 
     if maison_joueur is None:
-        print("⚠️ Maison du joueur introuvable dans le personnage (clé 'maison').")
+        print(" Maison du joueur introuvable dans le personnage (clé 'Maison').")
     else:
-        ajouter_points_maison(maisons, maison_joueur, score)
+        actualiser_points_maison(maisons, maison_joueur, score)
 
     # 4) Afficher la maison en tête
-    afficher_maison_en_tete(maisons)
+    afficher_maison_gagnante(maisons)
 
     # 5) Afficher toutes les informations du joueur
     print("\n=== Profil complet du joueur ===")
