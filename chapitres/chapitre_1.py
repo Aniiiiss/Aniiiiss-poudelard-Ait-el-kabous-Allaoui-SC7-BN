@@ -1,5 +1,6 @@
-from input_utils import demander_texte, demander_nombre, demander_choix, load_fichier
-from personnage import initialiser_personnage, afficher_personnage
+from utils.input_utils import demander_texte, demander_nombre, demander_choix, load_fichier
+from univers.personnage import initialiser_personnage, afficher_personnage, modifier_argent, ajouter_objet
+
 
 def introduction():
     print("====== Chapitre 1 : L'arrivée dans le monde magique ======")
@@ -12,49 +13,52 @@ def introduction():
 
     input("Appuyez sur Entrée pour ouvrir la lettre...")
 
+
 def creer_personnage():
     nom = demander_texte("Entrez le nom de votre personnage : ")
     prenom = demander_texte("Entrez le prénom de votre personnage : ")
+
     print("\nAttribuez vos caractéristiques (valeurs entre 1 et 10).")
-    courage = demander_nombre("courage : ",1, 10)
-    intelligence = demander_nombre("intelligence : ",1, 10)
-    loyaute =  demander_nombre("loyauté : ",1, 10)
-    ambition = demander_nombre("ambition : ",1, 10)
+    courage = demander_nombre("courage : ", 1, 10)
+    intelligence = demander_nombre("intelligence : ", 1, 10)
+    loyaute = demander_nombre("loyauté : ", 1, 10)
+    ambition = demander_nombre("ambition : ", 1, 10)
 
     attributs = {
         "courage": courage,
         "intelligence": intelligence,
-        "layauté": loyaute,
+        "loyauté": loyaute,   # correction de la faute 'layauté'
         "ambition": ambition,
     }
+
     personnage = initialiser_personnage(nom, prenom, attributs)
-    print("Voici votre personnage :")
+
+    print("\nVoici votre personnage :")
     afficher_personnage(personnage)
 
     return personnage
 
-def recevoir_lettre(personnage):
-    def recevoir_lettre():
-        print("\nUne chouette se pose devant toi et laisse tomber une enveloppe.")
-        print("Le parchemin est épais, l'écriture élégante, et un blason inconnu est scellé en rouge.\n")
 
-        print("« Nous avons le plaisir de vous informer que vous avez été admis(e) à l'École de Magie de Poudlard. »")
-        print("« Les cours débuteront le 1er septembre. »\n")
+def recevoir_lettre():
+    print("\nUne chouette se pose devant toi et laisse tomber une enveloppe.")
+    print("Le parchemin est épais, l'écriture élégante, et un blason inconnu est scellé en rouge.\n")
 
-        choix = demander_choix(
-            "Que décidez-vous de faire ?",
-            ["Accepter l'invitation", "Refuser et rester chez vous"]
-        )
+    print("« Nous avons le plaisir de vous informer que vous avez été admis(e) à l'École de Magie de Poudlard. »")
+    print("« Les cours débuteront le 1er septembre. »\n")
 
-        if choix == "Refuser et rester chez vous":
-            print("\nVous jetez la lettre à la poubelle.")
-            print("La magie n'était visiblement pas faite pour vous.")
-            print("Vous finissez votre vie à regarder la télévision. Fin de l'aventure 😴")
-            exit(0)
+    choix = demander_choix(
+        "Que décidez-vous de faire ?",
+        ["Accepter l'invitation", "Refuser et rester chez vous"]
+    )
 
-        print("\nVotre cœur s'emballe. Une nouvelle vie vous attend.")
-        print("Vous acceptez l'invitation et préparez vos valises...\n")
+    if choix == "Refuser et rester chez vous":
+        print("\nVous jetez la lettre à la poubelle.")
+        print("La magie n'était visiblement pas faite pour vous.")
+        print("Vous finissez votre vie à regarder la télévision. Fin de l'aventure 😴")
+        exit(0)
 
+    print("\nVotre cœur s'emballe. Une nouvelle vie vous attend.")
+    print("Vous acceptez l'invitation et préparez vos valises...\n")
 
 
 def rencontrer_hagrid(personnage):
@@ -76,136 +80,119 @@ def rencontrer_hagrid(personnage):
 
     input("Appuyez sur Entrée pour continuer vers le Chemin de Traverse...")
 
-def acheter_fournitures(personnage):
-    def _normaliser_catalogue(inventaire_json):
-        catalogue = []
 
-        if isinstance(inventaire_json, list):
-            for item in inventaire_json:
-                if isinstance(item, dict):
-                    nom = item.get("nom") or item.get("name") or item.get("objet")
-                    prix = item.get("prix") or item.get("price")
-                    if nom is not None and prix is not None:
-                        catalogue.append((nom, prix))
+def _normaliser_catalogue(inventaire_json):
+    """
+    Transforme le contenu de inventaire.json en une liste de tuples (nom, prix).
+    Permet de supporter plusieurs formats possibles.
+    """
+    catalogue = []
 
-        elif isinstance(inventaire_json, dict):
-            for k, v in inventaire_json.items():
-                if isinstance(v, dict) and "prix" in v:
-                    catalogue.append((k, v["prix"]))
-                elif isinstance(v, (int, float)):
-                    catalogue.append((k, v))
+    if isinstance(inventaire_json, list):
+        for item in inventaire_json:
+            if isinstance(item, dict):
+                nom = item.get("nom") or item.get("name") or item.get("objet")
+                prix = item.get("prix") or item.get("price")
+                if nom is not None and prix is not None:
+                    catalogue.append((nom, prix))
 
-
-            if len(catalogue) == 0:
-                for sous in inventaire_json.values():
-                    if isinstance(sous, dict):
-                        for k, v in sous.items():
-                            if isinstance(v, dict) and "prix" in v:
-                                catalogue.append((k, v["prix"]))
-                            elif isinstance(v, (int, float)):
-                                catalogue.append((k, v))
-
-        return catalogue
-
-    def acheter_fournitures(personnage):
-        print("\nBienvenue sur le Chemin de Traverse !")
-
-        inventaire_json = load_fichier("data/inventaire.json")
-        catalogue = _normaliser_catalogue(inventaire_json)
+    elif isinstance(inventaire_json, dict):
+        for k, v in inventaire_json.items():
+            if isinstance(v, dict) and "prix" in v:
+                catalogue.append((k, v["prix"]))
+            elif isinstance(v, (int, float)):
+                catalogue.append((k, v))
 
         if len(catalogue) == 0:
-            print("Erreur : catalogue vide ou format inventaire.json non reconnu.")
-            exit(1)
+            for sous in inventaire_json.values():
+                if isinstance(sous, dict):
+                    for k, v in sous.items():
+                        if isinstance(v, dict) and "prix" in v:
+                            catalogue.append((k, v["prix"]))
+                        elif isinstance(v, (int, float)):
+                            catalogue.append((k, v))
 
-        print("Catalogue des objets disponibles :")
-        for i in range(len(catalogue)):
-            nom, prix = catalogue[i]
-            print(f"{i + 1}. {nom} - {prix} galions")
+    return catalogue
 
-        obligatoires = ["Baguette magique", "Robe de sorcier", "Manuel de potions"]
 
-        # Pour éviter d’acheter deux fois la même chose
-        achetes = set()
+def acheter_fournitures(personnage):
+    print("\nBienvenue sur le Chemin de Traverse !")
 
-        # Boucle d’achats jusqu’à ce que tout soit acheté
-        while len(obligatoires) > 0:
-            argent = personnage.get("argent", 0)
-            print(f"\nVous avez {argent} galions.")
-            print("Objets obligatoires restant à acheter :", ", ".join(obligatoires))
+    inventaire_json = load_fichier("data/inventaire.json")
+    catalogue = _normaliser_catalogue(inventaire_json)
 
-            choix_num = demander_nombre("Entrez le numéro de l'objet à acheter : ", 1, len(catalogue))
-            nom_objet, prix_objet = catalogue[choix_num - 1]
+    if len(catalogue) == 0:
+        print("Erreur : catalogue vide ou format inventaire.json non reconnu.")
+        exit(1)
 
-            # Budget vérifié avant achat
-            if argent < prix_objet:
-                print("Vous n'avez pas assez d'argent pour cet achat. Vous perdez la partie !")
-                exit(0)
+    print("Catalogue des objets disponibles :")
+    for i, (nom, prix) in enumerate(catalogue, start=1):
+        print(f"{i}. {nom} - {prix} galions")
 
-            # Éviter les doublons
-            if nom_objet in achetes:
-                print("Vous avez déjà acheté cet objet.")
-                continue
+    obligatoires = ["Baguette magique", "Robe de sorcier", "Manuel de potions"]
+    achetes = set()
 
-            # Achat
-            modifier_argent(personnage, -prix_objet)
-            ajouter_objet(personnage, nom_objet)
-            achetes.add(nom_objet)
-            print(f"Vous avez acheté : {nom_objet} (-{prix_objet} galions).")
+    # Boucle d’achats jusqu’à ce que tout soit acheté
+    while len(obligatoires) > 0:
+        argent = personnage.get("Argent", 0)
+        print(f"\nVous avez {argent} galions.")
+        print("Objets obligatoires restant à acheter :", ", ".join(obligatoires))
 
-            # Si c'était un obligatoire, on l’enlève de la liste
-            if nom_objet in obligatoires:
-                obligatoires.remove(nom_objet)
+        choix_num = demander_nombre("Entrez le numéro de l'objet à acheter : ", 1, len(catalogue))
+        nom_objet, prix_objet = catalogue[choix_num - 1]
 
-        print("\nTous les objets obligatoires ont été achetés !")
-
-        # Choix de l'animal
-        animaux = [("Chouette", 20), ("Chat", 15), ("Rat", 10), ("Crapaud", 5)]
-
-        argent = personnage.get("argent", 0)
-        print(f"\nIl est temps de choisir votre animal de compagnie pour Poudlard ! Vous avez {argent} galions.")
-        print("Voici les animaux disponibles :")
-        for i in range(len(animaux)):
-            nom, prix = animaux[i]
-            print(f"{i + 1}. {nom} - {prix} galions")
-
-        print("Quel animal voulez-vous ?")
-        choix_animal = demander_nombre("Votre choix : ", 1, len(animaux))
-        nom_animal, prix_animal = animaux[choix_animal - 1]
-
-        argent = personnage.get("argent", 0)
-        if argent < prix_animal:
-            print("Vous n'avez pas assez d'argent pour cet animal. Vous perdez la partie !")
+        if argent < prix_objet:
+            print("Vous n'avez pas assez d'argent pour cet achat. Vous perdez la partie !")
             exit(0)
 
-        modifier_argent(personnage, -prix_animal)
-        ajouter_objet(personnage, nom_animal)
-        print(f"Vous avez choisi : {nom_animal} (-{prix_animal} galions).")
+        if nom_objet in achetes:
+            print("Vous avez déjà acheté cet objet.")
+            continue
 
-        # Affichage final
-        print("\nTous les objets obligatoires ont été achetés avec succès ! Voici votre inventaire final :")
-        afficher_personnage(personnage)
+        modifier_argent(personnage, -prix_objet)
+        ajouter_objet(personnage, "Inventaire", nom_objet)
+        achetes.add(nom_objet)
+        print(f"Vous avez acheté : {nom_objet} (-{prix_objet} galions).")
+
+        if nom_objet in obligatoires:
+            obligatoires.remove(nom_objet)
+
+    print("\nTous les objets obligatoires ont été achetés !")
+
+    # Choix de l'animal de compagnie
+    animaux = [("Chouette", 20), ("Chat", 15), ("Rat", 10), ("Crapaud", 5)]
+
+    argent = personnage.get("Argent", 0)
+    print(f"\nIl est temps de choisir votre animal de compagnie pour Poudlard ! Vous avez {argent} galions.")
+    print("Voici les animaux disponibles :")
+    for i, (nom, prix) in enumerate(animaux, start=1):
+        print(f"{i}. {nom} - {prix} galions")
+
+    choix_animal = demander_nombre("Votre choix : ", 1, len(animaux))
+    nom_animal, prix_animal = animaux[choix_animal - 1]
+
+    argent = personnage.get("Argent", 0)
+    if argent < prix_animal:
+        print("Vous n'avez pas assez d'argent pour cet animal. Vous perdez la partie !")
+        exit(0)
+
+    modifier_argent(personnage, -prix_animal)
+    ajouter_objet(personnage, "Inventaire", nom_animal)
+    print(f"Vous avez choisi : {nom_animal} (-{prix_animal} galions).")
+
+    print("\nTous les objets obligatoires ont été achetés avec succès ! Voici votre inventaire final :")
+    afficher_personnage(personnage)
 
 
 def lancer_chapitre_1():
-    # 1. Introduction
     introduction()
-
-    # 2. Création du personnage
     personnage = creer_personnage()
-
-    # 3. Réception de la lettre
     recevoir_lettre()
-
-    # 4. Rencontre avec Hagrid
     rencontrer_hagrid(personnage)
-
-    # 5. Achats des fournitures
     acheter_fournitures(personnage)
 
-    # 6. Fin du chapitre
     print("\n=== Fin du Chapitre 1 ===")
     print("Votre aventure commence à Poudlard...\n")
-
 
     return personnage
 

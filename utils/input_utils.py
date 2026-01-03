@@ -1,4 +1,4 @@
-def demande_texte(messsage):
+def demander_texte(messsage):
     #Demande un texte à l'utilisateur et s'assure qu'il n'est oas vide
     while True:
         texte = input(messsage)
@@ -9,7 +9,7 @@ def demande_texte(messsage):
             print('Veuillez entrer une texte non vide')
 
 #_____________________________________________________________________________________________________________________#
-def demande_nombre(message,min_val =None, max_val = None):
+def demander_nombre(message,min_val =None, max_val = None):
     while True:
         saisie = input(message).strip()
         #Verifier si la chaine n'est pas vide
