@@ -1,169 +1,167 @@
-from utils.input_utils import demander_choix, load_fichier
-from univers.personnage import afficher_personnage, modifier_argent, ajouter_objet
+import random
+
+from utils.input_utils import load_fichier
 from univers.maison import actualiser_points_maison, afficher_maison_gagnante
 
 
-def _afficher_titre(titre):
+def creer_equipe(maison, equipe_data, est_joueur=False, joueur=None):
+    equipe = {
+        "nom": maison,
+        "score": 0,
+        "a_marque": 0,
+        "a_stoppe": 0,
+        "attrape_vifdor": False,
+        "joueurs": []
+    }
 
-    print("\n" + "=" * 60)
-    print(titre)
-    print("=" * 60 + "\n")
+    joueurs_base = []
+    if isinstance(equipe_data, dict) and "joueurs" in equipe_data:
+        joueurs_base = equipe_data["joueurs"]
+    elif isinstance(equipe_data, list):
+        joueurs_base = equipe_data
+
+    if not isinstance(joueurs_base, list):
+        joueurs_base = []
+
+    if est_joueur and joueur is not None:
+        nom_j = str(joueur.get("Prenom", "")).strip()
+        prenom_j = str(joueur.get("Nom", "")).strip()
+        nom_complet = (nom_j + " " + prenom_j).strip()
+        if nom_complet == "":
+            nom_complet = "Joueur"
+        equipe["joueurs"].append(nom_complet + " (Attrapeur)")
+
+        for p in joueurs_base:
+            if isinstance(p, str):
+                if nom_complet.lower() not in p.lower():
+                    equipe["joueurs"].append(p)
+            else:
+                equipe["joueurs"].append(str(p))
+    else:
+        for p in joueurs_base:
+            if isinstance(p, str):
+                equipe["joueurs"].append(p)
+            else:
+                equipe["joueurs"].append(str(p))
+
+    return equipe
 
 
-def evaluation_finale(personnage, maisons):
+def tentative_marque(equipe_attaque, equipe_defense, joueur_est_joueur=False):
+    proba_but = random.randint(1, 10)
 
-    _afficher_titre("📘 Examen final de magie")
-
-    maison_joueur = personnage.get("Maison", None)
-    if maison_joueur is None:
-        print("⚠️ Erreur : aucune maison n’est associée au personnage.")
-        return
-
-
-    questions = load_fichier("../data/examen_final.json")
-
-    score_perso = 0
-
-    for q in questions:
-        print(q["enonce"])
-        reponse = demander_choix("Choisis une réponse :", q["propositions"])
-
-        if reponse == q["bonne_reponse"]:
-            print("✅ Bonne réponse !")
-            score_perso += q.get("points_perso", 10)
-            actualiser_points_maison(maisons, maison_joueur, q.get("points_maison", 20))
+    if proba_but >= 6:
+        buteur = ""
+        if joueur_est_joueur and len(equipe_attaque["joueurs"]) > 0:
+            buteur = equipe_attaque["joueurs"][0]
         else:
-            print("❌ Mauvaise réponse...")
-            score_perso += q.get("points_perso_mauvaise", 0)
-            actualiser_points_maison(maisons, maison_joueur, q.get("points_maison_mauvaise", 0))
+            if len(equipe_attaque["joueurs"]) > 0:
+                buteur = random.choice(equipe_attaque["joueurs"])
+            else:
+                buteur = "Un joueur"
 
-        print()
-
-
-    if score_perso > 0:
-        print(f"Tu as obtenu {score_perso} points à l’examen.")
-        print("Ces points sont convertis en Gallions pour tes prochaines fournitures.")
-        modifier_argent(personnage, score_perso)
+        equipe_attaque["score"] += 10
+        equipe_attaque["a_marque"] += 1
+        print(buteur + " marque un but pour " + equipe_attaque["nom"] + " ! (+10 points)")
     else:
-        print("Tu n’as obtenu aucun point à l’examen cette fois-ci...")
-
-    print(f"Argent actuel du personnage : {personnage.get('Argent', 0)}")
-    input("\n(Appuie sur Entrée pour passer aux évènements de fin d’année...)")
+        equipe_defense["a_stoppe"] += 1
+        print(equipe_defense["nom"] + " bloque l’attaque !")
 
 
-def evenements_fin_annee(personnage, maisons):
+def apparition_vifdor():
+    return random.randint(1, 6) == 6
 
-    _afficher_titre("🎉 Évènements de fin d’année")
 
-    maison_joueur = personnage.get("Maison", None)
-    if maison_joueur is None:
-        print("⚠️ Erreur : aucune maison n’est associée au personnage.")
+def attraper_vifdor(e1, e2):
+    gagnant = random.choice([e1, e2])
+    gagnant["score"] += 150
+    gagnant["attrape_vifdor"] = True
+    print("\nLe Vif d’Or a été attrapé par " + gagnant["nom"] + " ! (+150 points)\n")
+    return gagnant
+
+
+def afficher_score(e1, e2):
+    print("\nScore actuel :")
+    print("→ " + e1["nom"] + " : " + str(e1["score"]) + " points")
+    print("→ " + e2["nom"] + " : " + str(e2["score"]) + " points\n")
+
+
+def afficher_equipe(maison, equipe):
+    print("Équipe de " + maison + " :")
+    for j in equipe.get("joueurs", []):
+        print(" - " + str(j))
+    print("")
+
+
+def match_quidditch(joueur, maisons):
+    data = load_fichier("data/equipes_quidditch.json")
+
+    maison_joueur = joueur.get("Maison", None)
+    if maison_joueur is None or str(maison_joueur).strip() == "":
+        print("Erreur : le joueur n’a pas de maison. Chapitre 2 requis.")
         return
 
-    # Exemple : trois situations possibles
-    # Tu peux en ajouter/supprimer facilement.
-    # Pas besoin de JSON ici, tout est dans le code.
-    # Évènement 1 : farce dans les couloirs
-    print("Alors que l’année se termine, une grande farce éclate dans les couloirs.")
-    choix1 = demander_choix(
-        "Participes-tu à la farce ?",
-        [
-            "Oui, c’est amusant !",
-            "Non, je préfère éviter les ennuis.",
-            "Je dénonce discrètement la farce aux préfets."
-        ]
-    )
+    if not isinstance(data, dict) or maison_joueur not in data:
+        print("Erreur : données Quidditch invalides ou maison introuvable dans le JSON.")
+        return
 
-    if choix1 == "Oui, c’est amusant !":
-        print("Les élèves de ta maison rient beaucoup, mais les professeurs un peu moins...")
-        actualiser_points_maison(maisons, maison_joueur, -10)
-        print(f"Ta maison perd 10 points.")
-    elif choix1 == "Non, je préfère éviter les ennuis.":
-        print("Tu restes à l’écart et évites les problèmes.")
-        actualiser_points_maison(maisons, maison_joueur, 5)
-        print(f"Ta maison gagne 5 points.")
+    maisons_possibles = []
+    for m in data.keys():
+        if m != maison_joueur:
+            maisons_possibles.append(m)
+
+    if len(maisons_possibles) == 0:
+        print("Erreur : aucune maison adverse disponible.")
+        return
+
+    maison_adverse = random.choice(maisons_possibles)
+
+    e1 = creer_equipe(maison_joueur, data[maison_joueur], est_joueur=True, joueur=joueur)
+    e2 = creer_equipe(maison_adverse, data[maison_adverse], est_joueur=False, joueur=None)
+
+    print("\nMatch de Quidditch : " + e1["nom"] + " vs " + e2["nom"] + " !\n")
+    afficher_equipe(e1["nom"], e1)
+    afficher_equipe(e2["nom"], e2)
+
+    print("Tu joues pour " + e1["nom"] + " en tant qu’Attrapeur\n")
+
+    for tour in range(1, 21):
+        print("━━━ Tour " + str(tour) + " ━━━\n")
+
+        tentative_marque(e2, e1, joueur_est_joueur=False)
+        tentative_marque(e1, e2, joueur_est_joueur=True)
+
+        afficher_score(e1, e2)
+
+        if apparition_vifdor():
+            attraper_vifdor(e1, e2)
+            break
+
+        input("Appuyez sur Entrée pour continuer... ")
+        print("")
+
+    print("Fin du match !")
+    afficher_score(e1, e2)
+
+    if e1["score"] > e2["score"]:
+        print("Résultat final : " + e1["nom"] + " remporte le match !")
+        actualiser_points_maison(maisons, e1["nom"], 500)
+    elif e2["score"] > e1["score"]:
+        print("Résultat final : " + e2["nom"] + " remporte le match !")
+        actualiser_points_maison(maisons, e2["nom"], 500)
     else:
-        print("Les professeurs apprécient ton sens des responsabilités.")
-        actualiser_points_maison(maisons, maison_joueur, 15)
-        print(f"Ta maison gagne 15 points.")
+        print("Résultat final : match nul ! Aucun bonus de victoire.")
 
-    print()
-
-    # Évènement 2 : aide en bibliothèque
-    print("La bibliothécaire cherche de l’aide pour ranger des grimoires poussiéreux.")
-    choix2 = demander_choix(
-        "Que fais-tu ?",
-        [
-            "Tu proposes ton aide.",
-            "Tu fais semblant de ne pas entendre.",
-            "Tu envoies quelqu’un d’autre à ta place."
-        ]
-    )
-
-    if choix2 == "Tu proposes ton aide.":
-        print("Tu passes un long moment à ranger les rayons.")
-        actualiser_points_maison(maisons, maison_joueur, 10)
-        ajouter_objet(personnage, "Inventaire", "Marque-page magique")
-        print("Ta maison gagne 10 points et tu obtiens un 'Marque-page magique'.")
-    elif choix2 == "Tu fais semblant de ne pas entendre.":
-        print("Personne ne remarque vraiment ton absence.")
-        print("Aucun point n’est gagné ni perdu.")
-    else:
-        print("Le professeur découvre vite la supercherie.")
-        actualiser_points_maison(maisons, maison_joueur, -5)
-        print("Ta maison perd 5 points.")
-
-    print()
-
-    # Évènement 3 : match de Quidditch
-    print("Un dernier match de Quidditch amical est organisé entre les maisons.")
-    choix3 = demander_choix(
-        "Quel rôle joues-tu dans ce match ?",
-        [
-            "Attrapeur pour ta maison.",
-            "Supporter dans les tribunes.",
-            "Tu révises à la bibliothèque à la place."
-        ]
-    )
-
-    if choix3 == "Attrapeur pour ta maison.":
-        print("Tu attrapes le Vif d’Or au dernier moment !")
-        actualiser_points_maison(maisons, maison_joueur, 30)
-        print("Ta maison gagne 30 points.")
-    elif choix3 == "Supporter dans les tribunes.":
-        print("Tu encourages ton équipe avec enthousiasme.")
-        actualiser_points_maison(maisons, maison_joueur, 10)
-        print("Ta maison gagne 10 points.")
-    else:
-        print("Tu n’assistes pas au match, mais tu es prêt pour les examens futurs.")
-        print("Aucun point n’est gagné ni perdu.")
-
-    input("\n(Appuie sur Entrée pour voir le bilan de l’année...)")
-
-
-def bilan_final(personnage, maisons):
-
-    _afficher_titre(" Bilan de fin d’année")
-
-    print("Voici l’état final de ton personnage :\n")
-    afficher_personnage(personnage)
-
-    print("\nPoints des maisons :")
-    for nom_maison, points in maisons.items():
-        print(f"- {nom_maison} : {points} points")
-
-    print()
     afficher_maison_gagnante(maisons)
 
-    input("\n(Appuie sur Entrée pour conclure l’année à Poudlard...)")
 
+def lancer_chapitre4_quidditch(joueur, maisons):
+    print("\n============================================================")
+    print("🏟️ Chapitre 4 – Épreuve de Quidditch")
+    print("============================================================\n")
 
-def lancer_chapitre_4(personnage, maisons):
+    match_quidditch(joueur, maisons)
 
-    _afficher_titre("📖 Chapitre 4 – Fin d’année à Poudlard")
-
-    evaluation_finale(personnage, maisons)
-    evenements_fin_annee(personnage, maisons)
-    bilan_final(personnage, maisons)
-
-    print("\n Fin de l’aventure pour cette année à Poudlard !")
+    print("\nFin du Chapitre 4 — Quelle performance incroyable sur le terrain !\n")
+    print("Coupe des Quatre Maisons — Classement actuel :")
+    afficher_maison_gagnante(maisons)

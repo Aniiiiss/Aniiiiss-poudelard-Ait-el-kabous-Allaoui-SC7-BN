@@ -24,7 +24,7 @@ def _argent(personnage):
 def _catalogue_depuis_json(data):
     catalogue = []
 
-    # Format liste : [{"nom": "...", "prix": 10}, ...]
+    # Format liste :
     if isinstance(data, list):
         for item in data:
             if isinstance(item, dict):
@@ -33,7 +33,7 @@ def _catalogue_depuis_json(data):
                 if nom is not None and prix is not None:
                     catalogue.append((nom, int(prix)))
 
-    # Format dict : {"Objet": 10} ou {"Objet": {"prix": 10}}
+    # Format dict :
     elif isinstance(data, dict):
         for nom, val in data.items():
             if isinstance(val, dict) and "prix" in val:
@@ -41,15 +41,6 @@ def _catalogue_depuis_json(data):
             elif isinstance(val, (int, float)):
                 catalogue.append((nom, int(val)))
 
-        # Rare : sous-dictionnaires
-        if len(catalogue) == 0:
-            for sous in data.values():
-                if isinstance(sous, dict):
-                    for nom, val in sous.items():
-                        if isinstance(val, dict) and "prix" in val:
-                            catalogue.append((nom, int(val["prix"])))
-                        elif isinstance(val, (int, float)):
-                            catalogue.append((nom, int(val)))
 
     return catalogue
 
@@ -116,12 +107,12 @@ def _acheter_stock_depart(personnage, catalogue):
     achats = 5
 
     print("\nTu peux faire jusqu’à 5 achats (avec quantité 1 à 3).")
-    print("Astuce : n’achète pas que du cher… les clients aiment aussi le 'pas cher'.\n")
+    print("Astuce : n’achète pas que du cher… les clients aiment aussi le 'peu cher'.\n")
 
     while achats > 0:
         argent = _argent(personnage)
         if argent <= 0:
-            print("Oups… tu n’as plus un gallion. Fin des achats.")
+            print("Tu n’as plus un gallion. Fin des achats.")
             break
 
         choix = demander_choix("🛒 Action :", ["Acheter quelque chose", "Ouvrir la boutique maintenant"])
@@ -158,9 +149,6 @@ def lancer_chapitre_5(personnage, maisons):
     data = load_fichier("data/inventaire.json")
     catalogue = _catalogue_depuis_json(data)
 
-    if len(catalogue) == 0:
-        print("Erreur : impossible de lire inventaire.json (format vide ou inattendu).")
-        return personnage
 
     stock = _acheter_stock_depart(personnage, catalogue)
     if stock is None:

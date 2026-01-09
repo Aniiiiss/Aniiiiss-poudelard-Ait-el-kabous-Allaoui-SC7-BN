@@ -174,7 +174,7 @@ def installation_salle_commune(joueur):
 
     print("Tu suis les préfets à travers les escaliers mouvants et les longs couloirs...\n")
 
-    donnees_maisons = load_fichier("../data/maisons.json")
+    donnees_maisons = load_fichier("data/maisons.json")
 
     infos_maison = donnees_maisons.get(maison, {})
 

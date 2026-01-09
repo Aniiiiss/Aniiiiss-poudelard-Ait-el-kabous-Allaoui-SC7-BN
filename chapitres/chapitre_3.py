@@ -154,3 +154,4 @@ def lancer_chapitre_3(personnage, maisons):
 
     print("\n=== Profil complet du joueur ===")
     afficher_personnage(personnage)
+

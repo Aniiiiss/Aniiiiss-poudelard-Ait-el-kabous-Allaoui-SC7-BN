@@ -13,7 +13,7 @@ Le joueur crée son personnage, progresse à travers plusieurs chapitres (arriv�
 
 ## Journal de bord
 
-Période couverte : du 30 novembre 2025 au 28 décembre 2025 (d’après le graphique GitHub).  
+Période couverte : du 30 novembre 2025 au 28 décembre 2025 .  
 Binôme : Anis Ait el Kabous (Aniiiss) et Anas Allaoui (Fluox-Anas).
 
 ### Semaine du 30 novembre au 6 décembre 2025 — Mise en place et architecture
@@ -24,7 +24,7 @@ Binôme : Anis Ait el Kabous (Aniiiss) et Anas Allaoui (Fluox-Anas).
   - ajout des fichiers JSON dans `data/`.
 - Répartition :
   - Anis : mise en place de l’architecture (arborescence, création des fichiers à prévoir).
-  - Anas : mise en place parallèle et premiers tests d’intégration.
+  - Anas : mise en place parallèle 
 - Fin de semaine :
   - répartition définitive du travail sur le code pour la suite :
     - Anis : `utils/`, chapitres 1, 3 et 5
@@ -34,15 +34,12 @@ Binôme : Anis Ait el Kabous (Aniiiss) et Anas Allaoui (Fluox-Anas).
 - Objectif : avancer sur les modules attribués à chacun.
 - Travail réalisé :
   - Anis :
-    - implémentation du dossier `utils` (fonctions de saisie + chargement JSON) ;
+    - implémentation du dossier `utils` (fonctions de saisie ) ;
     - démarrage/avancement du Chapitre 1 (début de l’aventure, création du personnage, séquences d’introduction).
   - Anas :
     - développement des chapitres et modules qui lui sont attribués (parties restantes du scénario et logique associée) ;
     - premiers enchaînements entre les modules.
-- Problèmes rencontrés (classiques sur ce type de projet) :
-  - ajustements d’imports entre modules et cohérence des chemins vers `data/`.
-- Solutions :
-  - standardisation des imports (ex. `univers/...`, `utils/...`) et utilisation de chemins `data/...`.
+
 
 ### Semaine du 14 au 20 décembre 2025 — Consolidation et préparation du rendu intermédiaire
 - Objectif : stabiliser l’enchaînement des chapitres et corriger les bugs.

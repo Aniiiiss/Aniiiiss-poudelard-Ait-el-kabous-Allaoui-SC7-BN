@@ -1,6 +1,41 @@
 from utils.input_utils import demander_texte, demander_nombre, demander_choix, load_fichier
 from univers.personnage import initialiser_personnage, afficher_personnage, modifier_argent, ajouter_objet
 
+def _normaliser_catalogue(inventaire_json):
+    """
+    Transforme le contenu de inventaire.json en une liste de tuples (nom, prix).
+    Supporte plusieurs formats possibles.
+    """
+    catalogue = []
+
+    # Format 1 : liste de dict
+    if isinstance(inventaire_json, list):
+        for item in inventaire_json:
+            if isinstance(item, dict):
+                nom = item.get("nom") or item.get("name") or item.get("objet")
+                prix = item.get("prix") or item.get("price")
+                if nom is not None and prix is not None:
+                    catalogue.append((str(nom), int(prix)))
+
+    # Format 2 : dict {"Objet": 10} OU {"Objet": {"prix": 10}}
+    elif isinstance(inventaire_json, dict):
+        for k, v in inventaire_json.items():
+            if isinstance(v, dict) and "prix" in v:
+                catalogue.append((str(k), int(v["prix"])))
+            elif isinstance(v, (int, float)):
+                catalogue.append((str(k), int(v)))
+
+        # Format 3 : dict de sous-dicts (au cas où)
+        if len(catalogue) == 0:
+            for sous in inventaire_json.values():
+                if isinstance(sous, dict):
+                    for k, v in sous.items():
+                        if isinstance(v, dict) and "prix" in v:
+                            catalogue.append((str(k), int(v["prix"])))
+                        elif isinstance(v, (int, float)):
+                            catalogue.append((str(k), int(v)))
+
+    return catalogue
 
 def introduction():
     print("====== Chapitre 1 : L'arrivée dans le monde magique ======")
@@ -54,10 +89,10 @@ def recevoir_lettre():
     if choix == "Refuser et rester chez vous":
         print("\nVous jetez la lettre à la poubelle.")
         print("La magie n'était visiblement pas faite pour vous.")
-        print("Vous finissez votre vie à regarder la télévision. Fin de l'aventure 😴")
+        print("Vous finissez votre vie à regarder la télé. Fin de l'aventure ")
         exit(0)
 
-    print("\nVotre cœur s'emballe. Une nouvelle vie vous attend.")
+    print("\n. Une nouvelle vie vous attend.")
     print("Vous acceptez l'invitation et préparez vos valises...\n")
 
 
@@ -65,7 +100,7 @@ def rencontrer_hagrid(personnage):
     print("\nUne silhouette gigantesque apparaît devant vous.")
     print("Sa barbe est épaisse, son manteau immense, et son sourire rassurant.\n")
 
-    print("Hagrid : \"Salut ! Je suis Hagrid. Je suis venu t’aider à faire tes achats")
+    print("Hagrid : \"Salut ! Je m'appelle Hagrid. Je suis venu t’aider à faire tes achats")
     print("pour Poudlard, sur le Chemin de Traverse.\" \n")
 
     choix = demander_choix(
@@ -79,41 +114,6 @@ def rencontrer_hagrid(personnage):
         print("\nVous suivez Hagrid sans hésiter.")
 
     input("Appuyez sur Entrée pour continuer vers le Chemin de Traverse...")
-
-
-def _normaliser_catalogue(inventaire_json):
-    """
-    Transforme le contenu de inventaire.json en une liste de tuples (nom, prix).
-    Permet de supporter plusieurs formats possibles.
-    """
-    catalogue = []
-
-    if isinstance(inventaire_json, list):
-        for item in inventaire_json:
-            if isinstance(item, dict):
-                nom = item.get("nom") or item.get("name") or item.get("objet")
-                prix = item.get("prix") or item.get("price")
-                if nom is not None and prix is not None:
-                    catalogue.append((nom, prix))
-
-    elif isinstance(inventaire_json, dict):
-        for k, v in inventaire_json.items():
-            if isinstance(v, dict) and "prix" in v:
-                catalogue.append((k, v["prix"]))
-            elif isinstance(v, (int, float)):
-                catalogue.append((k, v))
-
-        if len(catalogue) == 0:
-            for sous in inventaire_json.values():
-                if isinstance(sous, dict):
-                    for k, v in sous.items():
-                        if isinstance(v, dict) and "prix" in v:
-                            catalogue.append((k, v["prix"]))
-                        elif isinstance(v, (int, float)):
-                            catalogue.append((k, v))
-
-    return catalogue
-
 
 def acheter_fournitures(personnage):
     print("\nBienvenue sur le Chemin de Traverse !")
